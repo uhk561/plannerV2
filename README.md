@@ -18,6 +18,7 @@ Spring Boot + JPA 기반 일정 관리 API
 ---
 ##  ERD
 
+<img width="1051" height="870" alt="플래서v2ERD" src="https://github.com/user-attachments/assets/8f66b2ab-943e-4247-bb9b-7b78c0605994" />
 
 
 
