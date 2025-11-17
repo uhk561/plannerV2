@@ -1,9 +1,7 @@
 package com.plannerv2.todo.service;
 
-import com.plannerv2.todo.dto.CreateTodoRequest;
-import com.plannerv2.todo.dto.CreateTodoResponse;
-import com.plannerv2.todo.dto.GetTodoResponse;
-import com.plannerv2.todo.entity.TodoEntity;
+import com.plannerv2.todo.dto.*;
+import com.plannerv2.todo.entity.Todo;
 import com.plannerv2.todo.repository.TodoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,28 +18,28 @@ public class TodoService {
     private final TodoRepository todoRepository;
 
     @Transactional
-    public CreateTodoResponse save(CreateTodoRequest request) {
-        TodoEntity todo = new TodoEntity(
+    public CreateTodoResponse crateTodo(CreateTodoRequest request) {
+        Todo todo = new Todo(
                 request.getTitle(),
                 request.getContent(),
                 request.getUserName()
         );
-        TodoEntity saveTodo = todoRepository.save(todo);
+        Todo crateTodo = todoRepository.save(todo);
 
         return new CreateTodoResponse(
-                saveTodo.getId(),
-                saveTodo.getTitle(),
-                saveTodo.getContent(),
-                saveTodo.getUserName(),
-                saveTodo.getCreatedAt(),
-                saveTodo.getModifiedAt()
+                crateTodo.getId(),
+                crateTodo.getTitle(),
+                crateTodo.getContent(),
+                crateTodo.getUserName(),
+                crateTodo.getCreatedAt(),
+                crateTodo.getModifiedAt()
         );
     }
 
     // 일정 조회(단 건)
     @Transactional(readOnly = true)
     public GetTodoResponse getTodo(Long id) {
-        TodoEntity todo = todoRepository.findById(id).orElseThrow(
+        Todo todo = todoRepository.findById(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 일정이 존재하지 않습니다.")
         );
         return new GetTodoResponse(
@@ -56,11 +54,11 @@ public class TodoService {
 
     // 전체 일정 조회
     @Transactional(readOnly = true)
-    public List<GetTodoResponse> getAll() {
-        List<TodoEntity> todos = todoRepository.findAll();
+    public List<GetTodoResponse> getAllTodo() {
+        List<Todo> todos = todoRepository.findAll();
 
         List<GetTodoResponse> dtos = new ArrayList<>();
-        for (TodoEntity todo : todos) {
+        for (Todo todo : todos) {
             GetTodoResponse dto = new GetTodoResponse(
                     todo.getId(),
                     todo.getTitle(),
@@ -74,6 +72,28 @@ public class TodoService {
         return dtos;
     }
 
+    // 일정 수정
     @Transactional
-    public
+    public UpdateTodoResponse updateTodo(Long id, UpdateTodoRequest request) {
+        Todo todo = todoRepository.findById(id).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 일정이 존재하지 않습니다.")
+        );
+
+        todo.update(request.getTitle(), request.getContent(), request.getUserName());
+        return new UpdateTodoResponse(
+                todo.getTitle(),
+                todo.getContent(),
+                todo.getUserName(),
+                todo.getModifiedAt()
+        );
+    }
+
+    // 일정 삭제
+    @Transactional
+    public void deleteTodo(Long id) {
+        Todo todo = todoRepository.findById(id).orElseThrow(
+                () ->  new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 일정이 존재하지 않습니다.")
+        );
+        todoRepository.deleteById(id);
+    }
 }

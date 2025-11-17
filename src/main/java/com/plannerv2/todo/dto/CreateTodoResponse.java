@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 @Getter
 public class CreateTodoResponse {
 
-    private final Long Id;
+    private final Long id;
     private final String title;
     private final String content;
     private final String userName;
@@ -15,7 +15,7 @@ public class CreateTodoResponse {
     private final LocalDateTime modifiedAt;
 
     public CreateTodoResponse(Long id, String title, String content, String userName, LocalDateTime createdAt, LocalDateTime modifiedAt) {
-        Id = id;
+        this.id = id;
         this.title = title;
         this.content = content;
         this.userName = userName;

@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "todos")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class TodoEntity extends BaseEntity {
+public class Todo extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +23,7 @@ public class TodoEntity extends BaseEntity {
 
     private String userName;
 
-    public TodoEntity(String title, String content, String userName) {
+    public Todo(String title, String content, String userName) {
         this.title = title;
         this.content = content;
         this.userName = userName;
