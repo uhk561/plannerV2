@@ -14,7 +14,7 @@ import java.util.List;
 @RequestMapping("/todo")
 public class TodoController {
 
-    private TodoService todoService;
+    private final TodoService todoService;
 
     // 일정 생성(작성)
     @PostMapping
@@ -45,8 +45,8 @@ public class TodoController {
 
     // 일정 삭제
     @DeleteMapping("/{id}")
-    public void deleteTodo(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteTodo(@PathVariable Long id) {
         todoService.deleteTodo(id);
-        return ResponseEntity.status(HttpStatus.OK).body(todoService.deleteTodo(id));
+        return ResponseEntity.noContent().build();
     }
 }
