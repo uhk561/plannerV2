@@ -28,7 +28,8 @@ public class UserService {
     public AddUserResponse addUser(AddUserRequest request) {
         User user = new User(
                 request.getName(),
-                request.getEmail()
+                request.getEmail(),
+                request.getPassword()
         );
         User addUser = userRepository.save(user);
 
@@ -36,6 +37,7 @@ public class UserService {
                 addUser.getId(),
                 addUser.getName(),
                 addUser.getEmail(),
+                addUser.getPassword(),
                 addUser.getCreatedAt(),
                 addUser.getModifiedAt()
         );
@@ -81,10 +83,9 @@ public class UserService {
         User user = userRepository.findById(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 유저입니다.")
         );
-        user.updateUser(request.getName(), request.getEmail());
+        user.updateUser(request.getName());
         return new UpdateUserResponse(
                 user.getName(),
-                user.getEmail(),
                 user.getModifiedAt()
         );
     }
