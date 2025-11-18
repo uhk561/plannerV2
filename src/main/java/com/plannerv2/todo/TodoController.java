@@ -2,6 +2,7 @@ package com.plannerv2.todo;
 
 import com.plannerv2.todo.dto.*;
 import com.plannerv2.todo.service.TodoService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ public class TodoController {
 
     // 일정 생성(작성)
     @PostMapping
-    public ResponseEntity<CreateTodoResponse> createTodo(@RequestBody CreateTodoRequest request) {
+    public ResponseEntity<CreateTodoResponse> createTodo(@Valid @RequestBody CreateTodoRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(todoService.crateTodo(request));
     }
 
