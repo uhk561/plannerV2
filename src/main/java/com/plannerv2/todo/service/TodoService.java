@@ -3,6 +3,8 @@ package com.plannerv2.todo.service;
 import com.plannerv2.todo.dto.*;
 import com.plannerv2.todo.entity.Todo;
 import com.plannerv2.todo.repository.TodoRepository;
+import com.plannerv2.user.entity.User;
+import com.plannerv2.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -16,21 +18,25 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TodoService {
     private final TodoRepository todoRepository;
+    private final UserRepository userRepository;
 
+    // 일정 생성
     @Transactional
     public CreateTodoResponse crateTodo(CreateTodoRequest request) {
+        User user = userRepository.findById(request.getUserId()).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "없는 유저입니다."));
         Todo todo = new Todo(
+                user,
                 request.getTitle(),
-                request.getContent(),
-                request.getUserName()
+                request.getContent()
         );
         Todo crateTodo = todoRepository.save(todo);
 
         return new CreateTodoResponse(
                 crateTodo.getId(),
+                crateTodo.getUser().getId(),
                 crateTodo.getTitle(),
                 crateTodo.getContent(),
-                crateTodo.getUserName(),
                 crateTodo.getCreatedAt(),
                 crateTodo.getModifiedAt()
         );
@@ -44,9 +50,9 @@ public class TodoService {
         );
         return new GetTodoResponse(
                 todo.getId(),
+                todo.getUser().getId(),
                 todo.getTitle(),
                 todo.getContent(),
-                todo.getUserName(),
                 todo.getCreatedAt(),
                 todo.getModifiedAt()
         );
@@ -61,9 +67,9 @@ public class TodoService {
         for (Todo todo : todos) {
             GetTodoResponse dto = new GetTodoResponse(
                     todo.getId(),
+                    todo.getUser().getId(),
                     todo.getTitle(),
                     todo.getContent(),
-                    todo.getUserName(),
                     todo.getCreatedAt(),
                     todo.getModifiedAt()
             );
@@ -79,11 +85,10 @@ public class TodoService {
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 일정이 존재하지 않습니다.")
         );
 
-        todo.update(request.getTitle(), request.getContent(), request.getUserName());
+        todo.updateTodo(request.getTitle(), request.getContent());
         return new UpdateTodoResponse(
                 todo.getTitle(),
                 todo.getContent(),
-                todo.getUserName(),
                 todo.getModifiedAt()
         );
     }

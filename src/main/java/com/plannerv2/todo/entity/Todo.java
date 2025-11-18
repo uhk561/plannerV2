@@ -2,6 +2,7 @@ package com.plannerv2.todo.entity;
 
 
 import com.plannerv2.common.entity.BaseEntity;
+import com.plannerv2.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -17,21 +18,27 @@ public class Todo extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "userId", nullable = false)
+    private User user;
+
     private String title;
 
     private String content;
 
-    private String userName;
 
-    public Todo(String title, String content, String userName) {
+    public Todo(User user, String title, String content) {
         this.title = title;
         this.content = content;
-        this.userName = userName;
+        this.user = user;
     }
 
-    public void update(String title, String content, String userName) {
-        this.title = title;
-        this.content = content;
-        this.userName = userName;
+    public void updateTodo(String title, String content) {
+        if (title != null) {
+            this.title = title;
+        }
+        if (content != null) {
+            this.content = content;
+        }
     }
 }

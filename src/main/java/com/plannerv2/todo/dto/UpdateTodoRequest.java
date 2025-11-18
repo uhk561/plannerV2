@@ -9,5 +9,4 @@ public class UpdateTodoRequest {
 
     private String title;
     private String content;
-    private String userName;
 }
