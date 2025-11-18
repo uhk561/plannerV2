@@ -7,6 +7,8 @@ import com.plannerv2.todo.dto.UpdateTodoResponse;
 import com.plannerv2.user.dto.*;
 import com.plannerv2.user.entity.User;
 import com.plannerv2.user.service.UserService;
+import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,11 +23,20 @@ public class UserController {
 
     private final UserService userService;
 
-    // 유저 생성
+    // 유저 생성 (회원가입)
     @PostMapping
     public ResponseEntity<AddUserResponse> addUser(@RequestBody AddUserRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.addUser(request));
     }
+
+    // 로그인
+    @PostMapping("/signIn")
+    public ResponseEntity<Void> signIn(@Valid @RequestBody SignInRequest request, HttpSession session) {
+        User user = userService.signIn(request.getEmail(), request.getPassword());
+        session.setAttribute("signInUser", user);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
 
     // 유저 한 명 조회
     @GetMapping("/{id}")

@@ -43,6 +43,18 @@ public class UserService {
         );
     }
 
+    // 로그인
+    @Transactional(readOnly = true)
+    public User signIn(String email, String password) {
+        User user = userRepository.findByEmail(email);
+
+        if (user == null || !user.getPassword().equals(password)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이메일 및 비밀번호가 일치하지않습니다");
+        }
+        return user;
+    }
+
+
     // 유저 조회하기 (한 명)
     @Transactional(readOnly = true)
     public GetuserResponse getUser(Long id) {
