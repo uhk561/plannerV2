@@ -1,19 +1,13 @@
 package com.plannerv2.user.service;
 
 import com.plannerv2.config.PasswordEncoder;
-import com.plannerv2.todo.dto.GetTodoResponse;
-import com.plannerv2.todo.dto.UpdateTodoRequest;
-import com.plannerv2.todo.entity.Todo;
 import com.plannerv2.user.dto.*;
 import com.plannerv2.user.entity.User;
 import com.plannerv2.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
@@ -36,14 +30,7 @@ public class UserService {
         );
         User addUser = userRepository.save(user);
 
-        return new AddUserResponse(
-                addUser.getId(),
-                addUser.getName(),
-                addUser.getEmail(),
-                addUser.getPassword(),
-                addUser.getCreatedAt(),
-                addUser.getModifiedAt()
-        );
+        return new AddUserResponse(addUser.getId(), addUser.getName(), addUser.getEmail(), addUser.getCreatedAt(), addUser.getModifiedAt());
     }
 
     // 로그인
@@ -64,13 +51,7 @@ public class UserService {
         User user = userRepository.findById(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 유저입니다.")
         );
-        return new GetuserResponse(
-                user.getId(),
-                user.getName(),
-                user.getEmail(),
-                user.getCreatedAt(),
-                user.getModifiedAt()
-        );
+        return new GetuserResponse(user.getId(), user.getName(), user.getEmail(), user.getCreatedAt(), user.getModifiedAt());
     }
 
     // 모든 유저 조회하기
@@ -80,13 +61,7 @@ public class UserService {
 
         List<GetuserResponse> dtos = new ArrayList<>();
         for (User user : users) {
-            GetuserResponse dto = new GetuserResponse(
-                    user.getId(),
-                    user.getName(),
-                    user.getEmail(),
-                    user.getCreatedAt(),
-                    user.getModifiedAt()
-            );
+            GetuserResponse dto = new GetuserResponse(user.getId(), user.getName(), user.getEmail(), user.getCreatedAt(), user.getModifiedAt());
             dtos.add(dto);
         }
         return dtos;
@@ -99,10 +74,7 @@ public class UserService {
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 유저입니다.")
         );
         user.updateUser(request.getName());
-        return new UpdateUserResponse(
-                user.getName(),
-                user.getModifiedAt()
-        );
+        return new UpdateUserResponse(user.getName(), user.getModifiedAt());
     }
 
     // 유저 삭제

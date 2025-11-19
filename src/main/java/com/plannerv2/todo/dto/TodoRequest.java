@@ -4,10 +4,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
-
 @Getter
-public class UpdateTodoRequest {
+public class TodoRequest {
+
 
     @NotBlank(message = "제목은 필수값")
     @Size(max = 30)

@@ -1,9 +1,6 @@
 package com.plannerv2.user;
 
 
-import com.plannerv2.todo.dto.GetTodoResponse;
-import com.plannerv2.todo.dto.UpdateTodoRequest;
-import com.plannerv2.todo.dto.UpdateTodoResponse;
 import com.plannerv2.user.dto.*;
 import com.plannerv2.user.entity.User;
 import com.plannerv2.user.service.UserService;
@@ -25,7 +22,7 @@ public class UserController {
 
     // 유저 생성 (회원가입)
     @PostMapping
-    public ResponseEntity<AddUserResponse> addUser(@RequestBody AddUserRequest request) {
+    public ResponseEntity<AddUserResponse> addUser(@Valid @RequestBody AddUserRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.addUser(request));
     }
 
@@ -34,6 +31,13 @@ public class UserController {
     public ResponseEntity<Void> signIn(@Valid @RequestBody SignInRequest request, HttpSession session) {
         User user = userService.signIn(request.getEmail(), request.getPassword());
         session.setAttribute("signInUser", user);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    // 로그아웃
+    @RequestMapping("/signOut")
+    public ResponseEntity<Void>  signOut(HttpSession session) {
+        session.invalidate();
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
@@ -53,7 +57,7 @@ public class UserController {
     // 유저 정보 수정
     @PatchMapping("/{id}")
     public ResponseEntity<UpdateUserResponse> updateUser(
-            @PathVariable long id,
+            @Valid @PathVariable long id,
             @RequestBody UpdateUserRequest request
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.updateUser(id, request));
