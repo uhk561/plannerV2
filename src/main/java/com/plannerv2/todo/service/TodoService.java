@@ -75,7 +75,7 @@ public class TodoService {
         Todo todo = todoRepository.findById(id).orElseThrow(
                 () ->  new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 일정이 존재하지 않습니다."));
         if (!todo.getUser().getId().equals(userId)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "본인의 일정만 수정할 수 있습니다.");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "본인의 일정만 삭제할 수 있습니다.");
         }
         todoRepository.deleteById(id);
     }
