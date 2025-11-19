@@ -1,5 +1,6 @@
 package com.plannerv2.user.service;
 
+import com.plannerv2.config.PasswordEncoder;
 import com.plannerv2.todo.dto.GetTodoResponse;
 import com.plannerv2.todo.dto.UpdateTodoRequest;
 import com.plannerv2.todo.entity.Todo;
@@ -22,14 +23,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     // 유저 추가하기
     @Transactional
     public AddUserResponse addUser(AddUserRequest request) {
+        String EncodePassword = passwordEncoder.encode(request.getPassword());
         User user = new User(
                 request.getName(),
                 request.getEmail(),
-                request.getPassword()
+                EncodePassword
         );
         User addUser = userRepository.save(user);
 
@@ -45,10 +48,10 @@ public class UserService {
 
     // 로그인
     @Transactional(readOnly = true)
-    public User signIn(String email, String password) {
+    public User signIn(String email, String rawPassword) {
         User user = userRepository.findByEmail(email);
 
-        if (user == null || !user.getPassword().equals(password)) {
+        if(user == null || !passwordEncoder.matches(rawPassword, user.getPassword())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이메일 및 비밀번호가 일치하지않습니다");
         }
         return user;
