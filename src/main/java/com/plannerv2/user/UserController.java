@@ -35,7 +35,7 @@ public class UserController {
     }
 
     // 로그아웃
-    @RequestMapping("/signOut")
+    @PostMapping("/signOut")
     public ResponseEntity<Void>  signOut(HttpSession session) {
         session.invalidate();
         return ResponseEntity.status(HttpStatus.OK).build();
